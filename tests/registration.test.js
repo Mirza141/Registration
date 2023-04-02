@@ -1,7 +1,8 @@
 const { Builder } = require('selenium-webdriver');
 const { Options } = require('selenium-webdriver/chrome');
-const { RegistrationPage } = require('./pages/RegistrationPage');
-const { REGISTRATION_PAGE_URL, SUCCESS_MESSAGE } = require('./constants');
+const RegistrationPage = require('../pages/RegistrationPage');
+const REGISTRATION_PAGE_URL = require('../utils/constants');
+const SUCCESS_MESSAGE  = require('../utils/constants');
 
 jest.setTimeout(30000);
 
@@ -20,7 +21,7 @@ describe('Registration Page', () => {
     });
 
     it('should register a new user', async () => {
-        await registrationPage.navigate();
+        await registrationPage.navigateTo();
         const userData = registrationPage.generateUserData();
         await registrationPage.registerUser(userData);
 

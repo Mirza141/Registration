@@ -17,13 +17,23 @@ class RegistrationPage {
         await this.driver.get(this.url);
     }
 
-    async register(firstName, lastName, email, password) {
-        await this.driver.findElement(this.firstNameField).sendKeys(firstName);
-        await this.driver.findElement(this.lastNameField).sendKeys(lastName);
-        await this.driver.findElement(this.emailField).sendKeys(email);
-        await this.driver.findElement(this.passwordField).sendKeys(password);
-        await this.driver.findElement(this.confirmPasswordField).sendKeys(password);
+    async registerUser(userData) {
+        await this.driver.findElement(this.firstNameField).sendKeys(userData.firstName);
+        await this.driver.findElement(this.lastNameField).sendKeys(userData.lastName);
+        await this.driver.findElement(this.emailField).sendKeys(userData.email);
+        await this.driver.findElement(this.passwordField).sendKeys(userData.password);
+        await this.driver.findElement(this.confirmPasswordField).sendKeys(userData.password);
         await this.driver.findElement(this.registerButton).click();
+    }
+
+
+    generateUserData() {
+        const firstName = `Test${Math.random().toString(36).substring(2, 6)}`;
+        const lastName = `User${Math.random().toString(36).substring(2, 6)}`;
+        const email = `${firstName}.${lastName}@example.com`;
+        const password = `password${Math.random().toString(36).substring(2, 8)}T`;
+
+        return { firstName, lastName, email, password };
     }
 
     async getSuccessMessage() {
