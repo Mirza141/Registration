@@ -11,6 +11,7 @@ class RegistrationPage {
         this.confirmPasswordField = By.id('password-confirmation');
         this.registerButton = By.css('button[title="Create an Account"]');
         this.successMessage = By.xpath('//div[@data-ui-id="message-success"]');
+        this.accountDashboardLink = By.css('a[href="/customer/account/"]');
     }
 
     async navigateTo() {
@@ -38,6 +39,10 @@ class RegistrationPage {
 
     async getSuccessMessage() {
         return await this.driver.wait(until.elementLocated(this.successMessage), 5000);
+    }
+
+    async getAccountDashboardLink() {
+        return await this.driver.wait(until.elementLocated(this.accountDashboardLink), 5000);
     }
 }
 
