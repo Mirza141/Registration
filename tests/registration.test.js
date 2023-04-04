@@ -9,13 +9,13 @@ describe('Registration Page', () => {
     let driver;
     let registrationPage;
 
-    beforeAll(async () => {
-        const chromeOptions = new Options().addArguments('--disable-extensions', '--headless', '--disable-gpu');
+    beforeEach(async () => {
+        const chromeOptions = new Options().addArguments('--disable-extensions', '--disable-gpu');
         driver = await new Builder().forBrowser('chrome').setChromeOptions(chromeOptions).build();
         registrationPage = new RegistrationPage(driver);
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await driver.quit();
     });
 
@@ -28,6 +28,66 @@ describe('Registration Page', () => {
 
         const successMessage = await registrationPage.getSuccessMessage();
         expect(await successMessage.getText()).toBe(constants.SUCCESS_MESSAGE);
+
+    });
+
+    it('should not register a new user with invalid email', async () => {
+        await registrationPage.navigateTo();
+        const userData = registrationPage.generateUserData('invalidemail');
+        await registrationPage.registerUser(userData);
+
+        await driver.wait(() => registrationPage.getEmailError(), 5000);
+
+        const failureMessage = await registrationPage.getEmailError();
+        expect(await failureMessage.getText()).toBe(constants.EMAIL_FAILURE_MESSAGE);
+
+    });
+
+    it('should not register a new user with invalid password', async () => {
+        await registrationPage.navigateTo();
+        const userData = registrationPage.generateUserData(null,"invalidpassword");
+        await registrationPage.registerUser(userData);
+
+        await driver.wait(() => registrationPage.getPasswordError(), 5000);
+
+        const failureMessage = await registrationPage.getPasswordError();
+        expect(await failureMessage.getText()).toBe(constants.PASSWORD_FAILURE_MESSAGE);
+
+    });
+
+    it('should not register a new user without firstName', async () => {
+        await registrationPage.navigateTo();
+        const userData = registrationPage.generateUserData(null,null," ");
+        await registrationPage.registerUser(userData);
+
+        await driver.wait(() => registrationPage.getFirstNameError(), 5000);
+
+        const failureMessage = await registrationPage.getFirstNameError();
+        expect(await failureMessage.getText()).toBe(constants.FIRST_NAME_FAILURE_MESSAGE);
+
+    });
+
+    it('should not register a new user without lastName', async () => {
+        await registrationPage.navigateTo();
+        const userData = registrationPage.generateUserData(null,null,null," ");
+        await registrationPage.registerUser(userData);
+
+        await driver.wait(() => registrationPage.getLastNameError(), 5000);
+
+        const failureMessage = await registrationPage.getLastNameError();
+        expect(await failureMessage.getText()).toBe(constants.LAST_NAME_FAILURE_MESSAGE);
+
+    });
+
+    it('should not register a new user without matching passwords', async () => {
+        await registrationPage.navigateTo();
+        const userData = registrationPage.generateUserData(null,null,null," ");
+        await registrationPage.registerUser(userData," ");
+
+        await driver.wait(() => registrationPage.getPasswordConfirmationError(), 5000);
+
+        const failureMessage = await registrationPage.getPasswordConfirmationError();
+        expect(await failureMessage.getText()).toBe(constants.LAST_NAME_FAILURE_MESSAGE);
 
     });
 });
